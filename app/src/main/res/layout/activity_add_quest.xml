@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/questTitleInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quest-Titel"/>
+
+        <EditText
+            android:id="@+id/questDescriptionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Beschreibung"/>
+
+        <EditText
+            android:id="@+id/questRewardInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Erfahrungspunkte-Belohnung"
+            android:inputType="number"/>
+
+        <Button
+            android:id="@+id/addQuestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quest hinzufügen"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
