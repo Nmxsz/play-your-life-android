@@ -26,11 +26,15 @@ class QuestAdapter(private val quests: List<Quest>, private val listener: QuestC
 
     override fun onBindViewHolder(holder: QuestViewHolder, position: Int) {
         val quest = quests[position]
-        holder.title.text = quest.title
-        holder.description.text = quest.description
-        holder.completeButton.setOnClickListener {
-            // Implementiere die Logik zum Markieren der Quest als abgeschlossen
-            listener.onQuestCompleted(quest)
+        println("onBindViewHolder")
+        println(position)
+        if(!quest.completed) {
+            holder.title.text = quest.title
+            holder.description.text = quest.description
+            holder.completeButton.setOnClickListener {
+                // Implementiere die Logik zum Markieren der Quest als abgeschlossen
+                listener.onQuestCompleted(quest)
+            }
         }
     }
 

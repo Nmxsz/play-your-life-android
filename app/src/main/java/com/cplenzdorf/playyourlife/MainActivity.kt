@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
     private lateinit var questAdapter: QuestAdapter
 
     private lateinit var levelProgressBar: ProgressBar
+    private lateinit var tvPlayerLevel: TextView
 
     private lateinit var viewModel: MainViewModel
 
@@ -37,7 +40,7 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
 
         viewModel.levelUpEvent.observe(this) {
             // Level-Up Event behandeln
-            Toast.makeText(this, "Level Up!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Level Up! Level: " + viewModel.currentLevel.value.toString(), Toast.LENGTH_SHORT).show()
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,16 +49,10 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
         fabAddQuest = findViewById(R.id.fabAddQuest)
         questList = ArrayList()
 
-//        questAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, questList)
-//        lvQuestList.adapter = questAdapter
-
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
         // Beispieldaten
         val quests: List<Quest> = listOf(
-            Quest(1, "Quest Titel 1", "Beschreibung 1", 10),
-            Quest(2, "Quest Titel 2", "Beschreibung 2", 20)
+            Quest(1, "Quest Titel 1", "Beschreibung 1", 10, false),
+            Quest(2, "Quest Titel 2", "Beschreibung 2", 20, false)
             // Weitere Quests...
         )
 
@@ -66,20 +63,26 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
         }
 
         questAdapter = QuestAdapter(quests, this)
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = questAdapter
 
         levelProgressBar = findViewById(R.id.levelProgressBar)
-
+        tvPlayerLevel = findViewById(R.id.tvPlayerLevel)
+        tvPlayerLevel.text = viewModel.currentLevel.value.toString()
 
     }
 
     override fun onQuestCompleted(quest: Quest) {
         viewModel.addExperience(quest.experienceReward)
         updateLevelProgress(viewModel.currentExperience) // Beispielwert
+        quest.completed = true
     }
 
     private fun updateLevelProgress(progress: Int) {
-        levelProgressBar.progress = progress
+        tvPlayerLevel.text = viewModel.currentLevel.value.toString()
+        println(viewModel.progress)
+        levelProgressBar.progress = viewModel.progress
     }
 
 }

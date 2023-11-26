@@ -6,7 +6,7 @@ class LevelService {
     var level = 1
         private set
 
-    private val experienceForNextLevel: Int
+    val experienceForNextLevel: Int
         get() = level * 100
 
     fun addExperience(points: Int) {
