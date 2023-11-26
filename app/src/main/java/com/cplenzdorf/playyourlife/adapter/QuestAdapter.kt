@@ -7,10 +7,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cplenzdorf.playyourlife.R
+import com.cplenzdorf.playyourlife.interfaces.QuestCompletionListener
 import com.cplenzdorf.playyourlife.models.Quest
 
 // QuestAdapter.kt
-class QuestAdapter(private val quests: List<Quest>) : RecyclerView.Adapter<QuestAdapter.QuestViewHolder>() {
+class QuestAdapter(private val quests: List<Quest>, private val listener: QuestCompletionListener) : RecyclerView.Adapter<QuestAdapter.QuestViewHolder>() {
 
     class QuestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.questTitle)
@@ -29,6 +30,7 @@ class QuestAdapter(private val quests: List<Quest>) : RecyclerView.Adapter<Quest
         holder.description.text = quest.description
         holder.completeButton.setOnClickListener {
             // Implementiere die Logik zum Markieren der Quest als abgeschlossen
+            listener.onQuestCompleted(quest)
         }
     }
 

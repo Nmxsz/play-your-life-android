@@ -5,14 +5,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cplenzdorf.playyourlife.adapter.QuestAdapter
 import com.cplenzdorf.playyourlife.databinding.ActivityMainBinding
+import com.cplenzdorf.playyourlife.interfaces.QuestCompletionListener
 import com.cplenzdorf.playyourlife.models.Quest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), QuestCompletionListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var lvQuestList: ListView
@@ -25,18 +28,23 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var levelProgressBar: ProgressBar
 
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        viewModel.levelUpEvent.observe(this) {
+            // Level-Up Event behandeln
+            Toast.makeText(this, "Level Up!", Toast.LENGTH_SHORT).show()
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         fabAddQuest = findViewById(R.id.fabAddQuest)
         questList = ArrayList()
-
-        questList.add("Apfel")
-        questList.add("Banane")
 
 //        questAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, questList)
 //        lvQuestList.adapter = questAdapter
@@ -57,11 +65,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        questAdapter = QuestAdapter(quests)
+        questAdapter = QuestAdapter(quests, this)
         recyclerView.adapter = questAdapter
 
         levelProgressBar = findViewById(R.id.levelProgressBar)
-        updateLevelProgress(50) // Beispielwert
+
+
+    }
+
+    override fun onQuestCompleted(quest: Quest) {
+        viewModel.addExperience(quest.experienceReward)
+        updateLevelProgress(viewModel.currentExperience) // Beispielwert
     }
 
     private fun updateLevelProgress(progress: Int) {
