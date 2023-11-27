@@ -1,5 +1,6 @@
 package com.cplenzdorf.playyourlife
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -49,20 +50,14 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
         fabAddQuest = findViewById(R.id.fabAddQuest)
         questList = ArrayList()
 
-        // Beispieldaten
-        val quests: List<Quest> = listOf(
-            Quest(1, "Quest Titel 1", "Beschreibung 1", 10, false),
-            Quest(2, "Quest Titel 2", "Beschreibung 2", 20, false)
-            // Weitere Quests...
-        )
-
         fabAddQuest.setOnClickListener {
             // Öffne AddQuestActivity
             val intent = Intent(this, AddQuestActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, ADD_QUEST_REQUEST_CODE)
+            questAdapter.notifyDataSetChanged()
         }
 
-        questAdapter = QuestAdapter(quests, this)
+        questAdapter = QuestAdapter(viewModel.quests, this)
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = questAdapter
@@ -83,6 +78,23 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
         tvPlayerLevel.text = viewModel.currentLevel.value.toString()
         println(viewModel.progress)
         levelProgressBar.progress = viewModel.progress
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ADD_QUEST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.getSerializableExtra("NEW_QUEST")?.let { newQuest ->
+                viewModel.addQuest(newQuest as Quest)
+                questAdapter.notifyDataSetChanged()
+                // Füge die neue Quest zur Liste hinzu und aktualisiere den Adapter
+                // Oder aktualisiere dein ViewModel, wenn du eines verwendest
+            }
+        }
+    }
+
+    companion object {
+        private const val ADD_QUEST_REQUEST_CODE = 1
     }
 
 }

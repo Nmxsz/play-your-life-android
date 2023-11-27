@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import com.cplenzdorf.playyourlife.models.Quest
 import com.cplenzdorf.playyourlife.services.LevelService
 
 class MainViewModel : ViewModel() {
@@ -22,6 +23,13 @@ class MainViewModel : ViewModel() {
     val levelUpEvent: LiveData<Unit> = _levelUpEvent
     private val _currentLevel = MutableLiveData<Int>().apply { value = levelService.level }
 
+    // Beispieldaten
+    val quests: MutableList<Quest> = mutableListOf(
+        Quest(1, "Quest Titel 1", "Beschreibung 1", 10, false),
+        Quest(2, "Quest Titel 2", "Beschreibung 2", 20, false)
+        // Weitere Quests...
+    )
+
     val _currentExperience: LiveData<Int>
         get() = MutableLiveData<Int>().apply { value = levelService.experience }
 
@@ -34,6 +42,10 @@ class MainViewModel : ViewModel() {
             // Level-Up erfolgt
             _levelUpEvent.value = Unit
         }
+    }
+
+    fun addQuest(quest: Quest) {
+        quests.add(quest)
     }
 
     // Berechnet den Fortschritt basierend auf Erfahrungspunkten und Level
