@@ -6,8 +6,12 @@ class LevelService {
     var level = 1
         private set
 
-    val experienceForNextLevel: Int
-        get() = level * 100
+    var experienceForNextLevel = 100
+
+    // Linearer Anstieg der XP-Anforderungen
+    private fun calculateExperienceForNextLevel() {
+        experienceForNextLevel = 100 * level // Jedes Level benötigt mehr XP
+    }
 
     fun addExperience(points: Int) {
         experience += points
@@ -18,6 +22,7 @@ class LevelService {
         while (experience >= experienceForNextLevel) {
             experience -= experienceForNextLevel
             level++
+            calculateExperienceForNextLevel()
             // Optional: Benachrichtige andere Komponenten über das Level-Up
         }
     }

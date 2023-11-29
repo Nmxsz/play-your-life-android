@@ -11,7 +11,10 @@ import com.cplenzdorf.playyourlife.interfaces.QuestCompletionListener
 import com.cplenzdorf.playyourlife.models.Quest
 
 // QuestAdapter.kt
-class QuestAdapter(private val quests: List<Quest>, private val listener: QuestCompletionListener) : RecyclerView.Adapter<QuestAdapter.QuestViewHolder>() {
+class QuestAdapter(private val quests: List<Quest>, private val listener: QuestCompletionListener) :
+    RecyclerView.Adapter<QuestAdapter.QuestViewHolder>() {
+
+    private val activeQuests = quests.filter { !it.completed }
 
     class QuestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.questTitle)
@@ -25,18 +28,16 @@ class QuestAdapter(private val quests: List<Quest>, private val listener: QuestC
     }
 
     override fun onBindViewHolder(holder: QuestViewHolder, position: Int) {
-        val quest = quests[position]
+        val quest = activeQuests[position]
         println("onBindViewHolder")
         println(position)
-        if(!quest.completed) {
-            holder.title.text = quest.title
-            holder.description.text = quest.description
-            holder.completeButton.setOnClickListener {
-                // Implementiere die Logik zum Markieren der Quest als abgeschlossen
-                listener.onQuestCompleted(quest)
-            }
+        holder.title.text = quest.title
+        holder.description.text = quest.description
+        holder.completeButton.setOnClickListener {
+            // Implementiere die Logik zum Markieren der Quest als abgeschlossen
+            listener.onQuestCompleted(quest)
         }
     }
 
-    override fun getItemCount() = quests.size
+    override fun getItemCount() = activeQuests.size
 }

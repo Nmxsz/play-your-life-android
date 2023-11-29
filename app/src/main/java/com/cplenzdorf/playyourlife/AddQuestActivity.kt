@@ -13,6 +13,7 @@ class AddQuestActivity : AppCompatActivity() {
     private lateinit var titleInput: EditText
     private lateinit var descriptionInput: EditText
     private lateinit var rewardInput: EditText
+    private var questId = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,14 +22,12 @@ class AddQuestActivity : AppCompatActivity() {
         descriptionInput = findViewById(R.id.questDescriptionInput)
         rewardInput = findViewById(R.id.questRewardInput)
 
-        var questId = 2
-
         val addQuestButton: Button = findViewById(R.id.addQuestButton)
         addQuestButton.setOnClickListener {
             val title = titleInput.text.toString()
             val description = descriptionInput.text.toString()
             val reward = rewardInput.text.toString().toInt()
-            val quest = Quest(3, title, description, reward)
+            val quest = Quest(questId++, title, description, reward)
             val resultIntent = Intent()
             resultIntent.putExtra("NEW_QUEST", quest)
             setResult(Activity.RESULT_OK, resultIntent)

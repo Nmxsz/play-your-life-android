@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "429063384985",
+    "firebase_url": "https://play-your-life-ac25f-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "play-your-life-ac25f",
+    "storage_bucket": "play-your-life-ac25f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429063384985:android:f907ca6542f7a4e4c7ad08",
+        "android_client_info": {
+          "package_name": "com.cplenzdorf.playyourlife"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsNVCSYN9xfhi8fualfwOmkMHvp6Y-JCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

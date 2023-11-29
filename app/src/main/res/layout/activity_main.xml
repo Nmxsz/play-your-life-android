@@ -9,7 +9,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddQuest"
+        android:id="@+id/fabMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -17,7 +17,7 @@
         android:layout_marginBottom="16dp"
         android:clickable="true"
         app:layout_anchorGravity="center"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,14 +54,27 @@
 
         </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/levelProgressBar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:maxHeight="30dp"
-            android:minHeight="30dp" />
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:id="@+id/levelProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:max="100"
+                android:maxHeight="30dp"
+                android:minHeight="30dp" />
+
+            <TextView
+                android:id="@+id/xpProgressText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="XP Progress" />
+        </FrameLayout>
 
 
         <ScrollView
