@@ -33,8 +33,8 @@ class MainViewModel : ViewModel() {
 
     // Beispieldaten
     val quests: MutableList<Quest> = mutableListOf(
-        Quest(1, "Quest Titel 1", "Beschreibung 1", 10, false),
-        Quest(2, "Quest Titel 2", "Beschreibung 2", 20, false)
+        //-Quest(1, "Quest Titel 1", "Beschreibung 1", 10, false),
+        //Quest(2, "Quest Titel 2", "Beschreibung 2", 20, true, true)
         // Weitere Quests...
     )
 
@@ -64,19 +64,12 @@ class MainViewModel : ViewModel() {
         quests.add(quest)
     }
 
-    fun scheduleDailyReset(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, DailyResetReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
-            PendingIntent.FLAG_IMMUTABLE)
-
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 24)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
+    fun resetDailyQuest() {
+        println("Reset Daily Quests!")
+        quests.forEach { quest: Quest ->
+            if (quest.daily) {
+                quest.completed = false
+            }
         }
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
     }
-
 }

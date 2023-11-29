@@ -4,16 +4,24 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +30,10 @@ import com.cplenzdorf.playyourlife.databinding.ActivityMainBinding
 import com.cplenzdorf.playyourlife.interfaces.QuestCompletionListener
 import com.cplenzdorf.playyourlife.models.Quest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.time.LocalDateTime
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
+
 
 class MainActivity : AppCompatActivity(), QuestCompletionListener {
 
@@ -40,8 +52,34 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var gameSoundPlayer: GameSoundPlayer
 
+    private val TAG = "MainActivity"
+    var myPendingIntent: PendingIntent? = null
+    var alarmManager: AlarmManager? = null
+    var myBroadcastReceiver: BroadcastReceiver? = null
+    var firingCal: Calendar? = null
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val checkResetRunnable: Runnable = object : Runnable {
+        override fun run() {
+            checkAndResetQuests()
+            // Plane den nächsten Lauf in 24 Stunden
+            handler.postDelayed(this, TimeUnit.MINUTES.toMillis(1))
+        }
+    }
+
+    private fun checkAndResetQuests() {
+        val preferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        if (preferences.getBoolean("DailyQuestsReset", false)) {
+            viewModel.resetDailyQuest()
+            updateQuestsList()
+            preferences.edit().putBoolean("DailyQuestsReset", false).apply()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        handler.post(checkResetRunnable)
 
         gameSoundPlayer = GameSoundPlayer(this)
 
@@ -71,7 +109,8 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
 
         fabMenu.setOnClickListener { v -> showPopupMenu(v) }
 
-
+        // Schedule the daily reset
+        scheduleDailyReset(this)
     }
 
     private fun showPopupMenu(view: View) {
@@ -196,5 +235,24 @@ class MainActivity : AppCompatActivity(), QuestCompletionListener {
     companion object {
         private const val ADD_QUEST_REQUEST_CODE = 1
     }
+
+    fun scheduleDailyReset(context: Context) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, DailyResetReceiver::class.java).putExtra(
+            "DAILY_RESET", true)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE)
+
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 24)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
+        println(Calendar.getInstance().getTime())
+        println("RESET")
+    }
+
 
 }

@@ -7,5 +7,6 @@ data class Quest(
     val title: String,
     val description: String,
     val experienceReward: Int,
-    var completed: Boolean = false
+    var completed: Boolean = false,
+    var daily: Boolean = false
 ): Serializable

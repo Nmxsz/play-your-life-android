@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,7 @@ class AddQuestActivity : AppCompatActivity() {
     private lateinit var titleInput: EditText
     private lateinit var descriptionInput: EditText
     private lateinit var rewardInput: EditText
+    private lateinit var cbvIsDaily: CheckBox
     private var questId = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,13 +23,15 @@ class AddQuestActivity : AppCompatActivity() {
         titleInput = findViewById(R.id.questTitleInput)
         descriptionInput = findViewById(R.id.questDescriptionInput)
         rewardInput = findViewById(R.id.questRewardInput)
+        cbvIsDaily = findViewById(R.id.cbvIsDaily)
 
         val addQuestButton: Button = findViewById(R.id.addQuestButton)
         addQuestButton.setOnClickListener {
             val title = titleInput.text.toString()
             val description = descriptionInput.text.toString()
             val reward = rewardInput.text.toString().toInt()
-            val quest = Quest(questId++, title, description, reward)
+            val isDaily = cbvIsDaily.isChecked
+            val quest = Quest(questId++, title, description, reward, daily = isDaily)
             val resultIntent = Intent()
             resultIntent.putExtra("NEW_QUEST", quest)
             setResult(Activity.RESULT_OK, resultIntent)
